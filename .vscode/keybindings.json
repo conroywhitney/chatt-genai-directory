@@ -33,5 +33,20 @@
     "key": "ctrl+shift+p",
     "command": "workbench.action.tasks.runTask",
     "args": "📤 Push Database Migrations"
+  },
+  {
+    "key": "ctrl+shift+t",
+    "command": "workbench.action.tasks.runTask",
+    "args": "🧪 Run All Tests"
+  },
+  {
+    "key": "ctrl+shift+w",
+    "command": "workbench.action.tasks.runTask",
+    "args": "🧪 Run Tests in Watch Mode"
+  },
+  {
+    "key": "ctrl+shift+c",
+    "command": "workbench.action.tasks.runTask",
+    "args": "🧪 Run Tests with Coverage"
   }
 ]

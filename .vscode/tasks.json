@@ -118,6 +118,102 @@
 			}
 		},
 		{
+			"label": "🧪 Run All Tests",
+			"type": "shell",
+			"command": "yarn test",
+			"group": "test",
+			"isBackground": false,
+			"problemMatcher": [],
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "shared",
+				"showReuseMessage": false,
+				"clear": true
+			}
+		},
+		{
+			"label": "🧪 Run Tests with Coverage",
+			"type": "shell",
+			"command": "yarn test --coverage",
+			"group": "test",
+			"isBackground": false,
+			"problemMatcher": [],
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "shared",
+				"showReuseMessage": false,
+				"clear": true
+			}
+		},
+		{
+			"label": "🧪 Run Tests in Watch Mode",
+			"type": "shell",
+			"command": "yarn test --watch",
+			"group": "test",
+			"isBackground": true,
+			"problemMatcher": [],
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "new",
+				"showReuseMessage": true,
+				"clear": false
+			}
+		},
+		{
+			"label": "🧪 Run Component Tests",
+			"type": "shell",
+			"command": "yarn test --testPathPattern=\"components|ui\"",
+			"group": "test",
+			"isBackground": false,
+			"problemMatcher": [],
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "shared",
+				"showReuseMessage": false,
+				"clear": true
+			}
+		},
+		{
+			"label": "🧪 Run Backend Tests (API + Hooks)",
+			"type": "shell",
+			"command": "yarn test --testPathPattern=\"(api|lib|hooks)\"",
+			"group": "test",
+			"isBackground": false,
+			"problemMatcher": [],
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "shared",
+				"showReuseMessage": false,
+				"clear": true
+			}
+		},
+		{
+			"label": "🧪 Test Suite Summary",
+			"type": "shell",
+			"command": "echo '🧪 Test Suite Overview:' && echo '' && echo 'Total Test Files:' && find __tests__ -name '*.test.*' -o -name '*.spec.*' | wc -l && echo '' && echo 'Test Categories:' && echo '  • Component Tests: UI components and interactions' && echo '  • API Tests: REST endpoints and error handling' && echo '  • Hook Tests: React hooks and state management' && echo '  • Config Tests: Supabase and utility configurations' && echo '' && echo 'Quick Commands:' && echo '  • yarn test          - Run all tests' && echo '  • yarn test --watch  - Watch mode for development' && echo '  • yarn test --coverage - With coverage report' && echo ''",
+			"group": "test",
+			"isBackground": false,
+			"problemMatcher": [],
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "shared",
+				"showReuseMessage": false,
+				"clear": true
+			}
+		},
+		{
 			"label": "🗄️ Setup Database",
 			"type": "shell",
 			"command": "echo '🗄️ Database Setup Instructions:' && echo '' && echo '1. Make sure you have your .env.local file with Supabase credentials' && echo '2. Run: yarn db:setup (links project and pushes migrations)' && echo '3. Or manually: supabase link then supabase db push' && echo '4. Check status: yarn db:status' && echo '' && echo 'Your migrations are in: supabase/migrations/' && echo 'Check .env.local.example for required environment variables!'",
