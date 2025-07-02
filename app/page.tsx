@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { useLocalStorage } from "@/hooks/use-local-storage"
 import { useSupabaseMembers } from "@/hooks/use-supabase-members"
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"
@@ -21,11 +21,7 @@ export default function MemberDirectoryPage() {
   const [currentUserId, setCurrentUserId] = useLocalStorage<string | null>("chattgenai-currentUser", null)
   const [newMemberId, setNewMemberId] = useState<string | null>(null)
   const [isMounted, setIsMounted] = useState(false)
-
-  // This state flag tracks if the initial "enter" animation has run for the member cards.
-  // We set it to true after the first batch of animations completes, preventing it from
-  // re-running on subsequent updates (e.g., profile edits).
-  const [initialAnimationComplete, setInitialAnimationComplete] = useState(false)
+  const [showInitialAnimation, setShowInitialAnimation] = useState(true)
 
   const currentUser = members.find((m) => m.id === currentUserId)
 
@@ -35,18 +31,15 @@ export default function MemberDirectoryPage() {
   }, [])
 
   useEffect(() => {
-    // This effect runs when the component mounts and members are loaded.
-    // It sets a timer to mark the initial animation as complete after all cards
-    // have had a chance to animate in.
-    if (members.length > 0 && !initialAnimationComplete && isMounted) {
-      // Calculate delay to wait for all staggered animations to finish
-      const totalAnimationTime = members.length * 75 + 500 // 75ms per card + 500ms buffer
+    // After members load and animations finish, disable initial animations
+    if (members.length > 0 && showInitialAnimation) {
+      const totalAnimationTime = members.length * 75 + 500 // 75ms stagger + 400ms animation + buffer
       const timer = setTimeout(() => {
-        setInitialAnimationComplete(true)
+        setShowInitialAnimation(false)
       }, totalAnimationTime)
       return () => clearTimeout(timer)
     }
-  }, [members, initialAnimationComplete, isMounted])
+  }, [members.length, showInitialAnimation])
 
   const handleLogin = async () => {
     try {
@@ -176,8 +169,8 @@ export default function MemberDirectoryPage() {
                   if (member.id === newMemberId) {
                     // Specific animation for a brand new member
                     animationClass = "new-member-card"
-                  } else if (!initialAnimationComplete) {
-                    // Staggered animation for the initial page load
+                  } else if (showInitialAnimation) {
+                    // Staggered animation for the initial page load only
                     animationClass = "animate-card-enter"
                   }
 
