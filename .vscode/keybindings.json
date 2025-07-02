@@ -23,5 +23,15 @@
     "key": "ctrl+shift+q",
     "command": "workbench.action.tasks.runTask",
     "args": "🏃‍♂️ Quick Setup & Start"
+  },
+  {
+    "key": "ctrl+shift+d",
+    "command": "workbench.action.tasks.runTask",
+    "args": "🗄️ Setup Database"
+  },
+  {
+    "key": "ctrl+shift+p",
+    "command": "workbench.action.tasks.runTask",
+    "args": "📤 Push Database Migrations"
   }
 ]

@@ -98,5 +98,5 @@
 
 .animate-card-enter {
   animation: card-enter 0.4s ease-out forwards;
-  opacity: 0;
+  /* Remove the initial opacity: 0 - let the animation handle it */
 }
