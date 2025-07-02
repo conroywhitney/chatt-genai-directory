@@ -116,6 +116,70 @@
 				"showReuseMessage": false,
 				"clear": false
 			}
+		},
+		{
+			"label": "🗄️ Setup Database",
+			"type": "shell",
+			"command": "echo '🗄️ Database Setup Instructions:' && echo '' && echo '1. Make sure you have your .env.local file with Supabase credentials' && echo '2. Run: yarn db:setup (links project and pushes migrations)' && echo '3. Or manually: supabase link then supabase db push' && echo '4. Check status: yarn db:status' && echo '' && echo 'Your migrations are in: supabase/migrations/' && echo 'Check .env.local.example for required environment variables!'",
+			"group": "build",
+			"isBackground": false,
+			"problemMatcher": [],
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "shared",
+				"showReuseMessage": false,
+				"clear": true
+			}
+		},
+		{
+			"label": "🔗 Link Supabase Project",
+			"type": "shell",
+			"command": "yarn supabase link",
+			"group": "build",
+			"isBackground": false,
+			"problemMatcher": [],
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "shared",
+				"showReuseMessage": false,
+				"clear": true
+			}
+		},
+		{
+			"label": "📤 Push Database Migrations",
+			"type": "shell",
+			"command": "yarn db:push",
+			"group": "build",
+			"isBackground": false,
+			"problemMatcher": [],
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "shared",
+				"showReuseMessage": false,
+				"clear": true
+			}
+		},
+		{
+			"label": "📊 Database Status",
+			"type": "shell",
+			"command": "yarn db:status",
+			"group": "build",
+			"isBackground": false,
+			"problemMatcher": [],
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "shared",
+				"showReuseMessage": false,
+				"clear": true
+			}
 		}
 	]
 }

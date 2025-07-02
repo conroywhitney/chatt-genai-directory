@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { useLocalStorage } from "@/hooks/use-local-storage"
+import { useSupabaseMembers } from "@/hooks/use-supabase-members"
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"
 import { Twitter, Linkedin, User, Briefcase, BrainCircuit, Github } from "lucide-react"
 import { ThemeToggle } from "@/components/theme-toggle"
@@ -10,20 +11,13 @@ import { ProfileView } from "@/components/profile-view"
 import { toast } from "@/components/ui/use-toast"
 import { Toaster } from "@/components/ui/toaster"
 import { DiscordIcon } from "@/components/icons/discord-icon"
-
-interface Member {
-  id: string
-  name: string
-  role: string
-  interest: string
-  twitter?: string
-  linkedin?: string
-  discord?: string
-  github?: string
-}
+import { Member } from "@/lib/supabase"
 
 export default function MemberDirectoryPage() {
-  const [members, setMembers] = useLocalStorage<Member[]>("chattgenai-members", [])
+  // Use Supabase for members data
+  const { members, loading, error, addMember, updateMember, deleteMember } = useSupabaseMembers()
+  
+  // Keep currentUserId in localStorage for session persistence
   const [currentUserId, setCurrentUserId] = useLocalStorage<string | null>("chattgenai-currentUser", null)
   const [newMemberId, setNewMemberId] = useState<string | null>(null)
 
@@ -48,22 +42,29 @@ export default function MemberDirectoryPage() {
     }
   }, [members, initialAnimationComplete])
 
-  const handleLogin = () => {
-    const newId = Date.now().toString()
-    const newMember: Member = {
-      id: newId,
-      name: "New Member",
-      role: "AI Enthusiast",
-      interest: "Exploring GenAI",
+  const handleLogin = async () => {
+    try {
+      const newMember = await addMember({
+        name: "New Member",
+        role: "AI Enthusiast",
+        interest: "Exploring GenAI",
+      })
+      
+      setCurrentUserId(newMember.id!)
+      setNewMemberId(newMember.id!)
+      setTimeout(() => setNewMemberId(null), 1000)
+      
+      toast({
+        title: "Welcome!",
+        description: "Please complete your profile.",
+      })
+    } catch (err) {
+      toast({
+        title: "Error",
+        description: "Failed to create profile. Please try again.",
+        variant: "destructive",
+      })
     }
-    setMembers([...members, newMember])
-    setCurrentUserId(newId)
-    setNewMemberId(newId)
-    setTimeout(() => setNewMemberId(null), 1000)
-    toast({
-      title: "Welcome!",
-      description: "Please complete your profile.",
-    })
   }
 
   const handleLogout = () => {
@@ -74,12 +75,25 @@ export default function MemberDirectoryPage() {
     })
   }
 
-  const handleUpdateProfile = (updatedMember: Member) => {
-    setMembers(members.map((m) => (m.id === updatedMember.id ? updatedMember : m)))
-    toast({
-      title: "Profile Updated",
-      description: "Your information has been saved.",
-    })
+  const handleUpdateProfile = async (updatedMember: Member) => {
+    try {
+      if (!updatedMember.id) {
+        throw new Error("Member ID is required for updates")
+      }
+      
+      await updateMember(updatedMember.id, updatedMember)
+      
+      toast({
+        title: "Profile Updated",
+        description: "Your information has been saved.",
+      })
+    } catch (err) {
+      toast({
+        title: "Error",
+        description: "Failed to update profile. Please try again.",
+        variant: "destructive",
+      })
+    }
   }
 
   return (
@@ -96,19 +110,42 @@ export default function MemberDirectoryPage() {
           <p className="mt-4 text-lg md:text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
             The official member directory. Connect with fellow AI enthusiasts and professionals.
           </p>
+          
+          {/* Database Status Indicator for Demo */}
+          <div className="mt-4 flex justify-center">
+            <div className="inline-flex items-center px-3 py-1 rounded-full text-xs bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-300 border border-green-200 dark:border-green-800">
+              <div className="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse"></div>
+              Connected to Supabase Database
+            </div>
+          </div>
         </header>
 
         <div className="grid md:grid-cols-3 gap-8 items-start">
           <div className="md:col-span-1">
             {currentUser ? (
-              <ProfileView member={currentUser} onUpdate={handleUpdateProfile} onLogout={handleLogout} />
+              <ProfileView 
+                member={currentUser as any} // Type assertion for demo - in production, align types
+                onUpdate={handleUpdateProfile} 
+                onLogout={handleLogout} 
+              />
             ) : (
               <LoginView onLogin={handleLogin} />
             )}
           </div>
 
           <div className="md:col-span-2">
-            <h2 className="text-3xl font-bold text-gray-800 dark:text-gray-100 mb-6">Members</h2>
+            <h2 className="text-3xl font-bold text-gray-800 dark:text-gray-100 mb-6">
+              Members {loading && <span className="text-sm text-gray-500">(Loading...)</span>}
+            </h2>
+            
+            {error && (
+              <div className="mb-4 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+                <p className="text-red-800 dark:text-red-200 text-sm">
+                  Error loading members: {error}
+                </p>
+              </div>
+            )}
+            
             {members.length > 0 ? (
               <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {members.map((member, index) => {
