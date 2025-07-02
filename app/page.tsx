@@ -20,6 +20,7 @@ export default function MemberDirectoryPage() {
   // Keep currentUserId in localStorage for session persistence
   const [currentUserId, setCurrentUserId] = useLocalStorage<string | null>("chattgenai-currentUser", null)
   const [newMemberId, setNewMemberId] = useState<string | null>(null)
+  const [isMounted, setIsMounted] = useState(false)
 
   // This state flag tracks if the initial "enter" animation has run for the member cards.
   // We set it to true after the first batch of animations completes, preventing it from
@@ -29,10 +30,15 @@ export default function MemberDirectoryPage() {
   const currentUser = members.find((m) => m.id === currentUserId)
 
   useEffect(() => {
+    // Prevent hydration flash by marking component as mounted
+    setIsMounted(true)
+  }, [])
+
+  useEffect(() => {
     // This effect runs when the component mounts and members are loaded.
     // It sets a timer to mark the initial animation as complete after all cards
     // have had a chance to animate in.
-    if (members.length > 0 && !initialAnimationComplete) {
+    if (members.length > 0 && !initialAnimationComplete && isMounted) {
       // Calculate delay to wait for all staggered animations to finish
       const totalAnimationTime = members.length * 75 + 500 // 75ms per card + 500ms buffer
       const timer = setTimeout(() => {
@@ -40,7 +46,7 @@ export default function MemberDirectoryPage() {
       }, totalAnimationTime)
       return () => clearTimeout(timer)
     }
-  }, [members, initialAnimationComplete])
+  }, [members, initialAnimationComplete, isMounted])
 
   const handleLogin = async () => {
     try {
@@ -147,7 +153,12 @@ export default function MemberDirectoryPage() {
 
           <div className="md:col-span-2">
             <h2 className="text-3xl font-bold text-gray-800 dark:text-gray-100 mb-6">
-              Members {loading && <span className="text-sm text-gray-500">(Loading...)</span>}
+              Members {loading && (
+                <span className="inline-flex items-center text-sm text-gray-500 ml-2">
+                  <div className="w-3 h-3 border-2 border-gray-300 border-t-blue-500 rounded-full animate-spin mr-2"></div>
+                  Loading...
+                </span>
+              )}
             </h2>
             
             {error && (
@@ -158,7 +169,7 @@ export default function MemberDirectoryPage() {
               </div>
             )}
             
-            {members.length > 0 ? (
+            {members.length > 0 && isMounted ? (
               <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {members.map((member, index) => {
                   let animationClass = ""
@@ -241,6 +252,28 @@ export default function MemberDirectoryPage() {
                     </div>
                   )
                 })}
+              </div>
+            ) : !isMounted || loading ? (
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {/* Loading skeleton cards */}
+                {[...Array(3)].map((_, i) => (
+                  <Card key={i} className="flex flex-col h-full animate-pulse">
+                    <CardHeader>
+                      <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-3/4"></div>
+                    </CardHeader>
+                    <CardContent className="flex-grow space-y-3">
+                      <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-full"></div>
+                      <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-2/3"></div>
+                      <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-4/5"></div>
+                    </CardContent>
+                    <CardFooter>
+                      <div className="flex space-x-3">
+                        <div className="w-5 h-5 bg-gray-200 dark:bg-gray-700 rounded"></div>
+                        <div className="w-5 h-5 bg-gray-200 dark:bg-gray-700 rounded"></div>
+                      </div>
+                    </CardFooter>
+                  </Card>
+                ))}
               </div>
             ) : (
               <div className="text-center py-12 px-6 border-2 border-dashed rounded-lg">
