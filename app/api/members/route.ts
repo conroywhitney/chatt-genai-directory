@@ -37,7 +37,7 @@ export async function POST(request: NextRequest) {
       !body.interest || typeof body.interest !== 'string' || body.interest.trim().length < 1
     ) {
       return NextResponse.json(
-        { error: 'Valid name (min 2 chars), role, and interest are required' },
+        { error: 'Name, role, and interest are required' },
         { status: 400 }
       )
     }
@@ -63,7 +63,7 @@ export async function POST(request: NextRequest) {
     if (error) {
       console.error('Supabase error:', error)
       return NextResponse.json(
-        { error: error.message || 'Failed to save member' },
+        { error: 'Failed to save member' },
         { status: 500 }
       )
     }
@@ -84,7 +84,7 @@ export async function PUT(request: NextRequest) {
     
     if (!body.id || typeof body.id !== 'string') {
       return NextResponse.json(
-        { error: 'Valid ID is required for updates' },
+        { error: 'ID is required for updates' },
         { status: 400 }
       )
     }
@@ -142,7 +142,7 @@ export async function PUT(request: NextRequest) {
     if (error) {
       console.error('Supabase error:', error)
       return NextResponse.json(
-        { error: error.message || 'Failed to update member' },
+        { error: 'Failed to update member' },
         { status: 500 }
       )
     }
