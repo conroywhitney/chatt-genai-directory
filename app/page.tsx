@@ -14,7 +14,7 @@ import { Member } from "@/lib/supabase"
 
 export default function MemberDirectoryPage() {
   // Use Supabase for members data
-  const { members, loading, error, addMember, updateMember, deleteMember } = useSupabaseMembers()
+  const { members, loading, error, addMember, updateMember } = useSupabaseMembers()
   
   // Keep currentUserId in localStorage for session persistence
   const [currentUserId, setCurrentUserId] = useLocalStorage<string | null>("chattgenai-currentUser", null)
@@ -44,7 +44,7 @@ export default function MemberDirectoryPage() {
         title: "Welcome!",
         description: "Please complete your profile.",
       })
-    } catch (err) {
+    } catch {
       toast({
         title: "Error",
         description: "Failed to create profile. Please try again.",
@@ -73,7 +73,7 @@ export default function MemberDirectoryPage() {
         title: "Profile Updated",
         description: "Your information has been saved.",
       })
-    } catch (err) {
+    } catch {
       toast({
         title: "Error",
         description: "Failed to update profile. Please try again.",
@@ -111,7 +111,7 @@ export default function MemberDirectoryPage() {
           <div className="md:col-span-1">
             {currentUser ? (
               <ProfileView 
-                member={currentUser as any} // Type assertion for demo - in production, align types
+                member={currentUser as Required<Member>} 
                 onUpdate={handleUpdateProfile} 
                 onLogout={handleLogout} 
               />
