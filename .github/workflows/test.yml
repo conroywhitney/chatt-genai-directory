@@ -37,6 +37,10 @@ jobs:
 
       - name: 🧪 Run tests
         run: yarn test --coverage --passWithNoTests
+        env:
+          # Mock Supabase environment variables for testing
+          NEXT_PUBLIC_SUPABASE_URL: https://test.supabase.co
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: test-anon-key-for-ci
 
       - name: 📊 Upload coverage to Codecov
         uses: codecov/codecov-action@v4
@@ -117,6 +121,10 @@ jobs:
 
       - name: 🏗️ Build application
         run: yarn build
+        env:
+          # Mock Supabase environment variables for build
+          NEXT_PUBLIC_SUPABASE_URL: https://test.supabase.co
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: test-anon-key-for-ci
 
       - name: ✅ Build successful
         run: echo "🎉 Build completed successfully!"
