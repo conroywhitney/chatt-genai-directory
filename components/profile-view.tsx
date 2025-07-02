@@ -14,6 +14,7 @@ interface Member {
   twitter?: string
   linkedin?: string
   discord?: string
+  github?: string
 }
 
 interface ProfileViewProps {
@@ -29,6 +30,7 @@ export function ProfileView({ member, onUpdate, onLogout }: ProfileViewProps) {
   const [twitter, setTwitter] = useState(member.twitter || "")
   const [linkedin, setLinkedin] = useState(member.linkedin || "")
   const [discord, setDiscord] = useState(member.discord || "")
+  const [github, setGithub] = useState(member.github || "")
 
   useEffect(() => {
     setName(member.name)
@@ -37,6 +39,7 @@ export function ProfileView({ member, onUpdate, onLogout }: ProfileViewProps) {
     setTwitter(member.twitter || "")
     setLinkedin(member.linkedin || "")
     setDiscord(member.discord || "")
+    setGithub(member.github || "")
   }, [member])
 
   const handleSubmit = (e: FormEvent) => {
@@ -49,6 +52,7 @@ export function ProfileView({ member, onUpdate, onLogout }: ProfileViewProps) {
       twitter: twitter || undefined,
       linkedin: linkedin || undefined,
       discord: discord || undefined,
+      github: github || undefined,
     })
   }
 
@@ -95,6 +99,15 @@ export function ProfileView({ member, onUpdate, onLogout }: ProfileViewProps) {
               id="linkedin"
               value={linkedin}
               onChange={(e) => setLinkedin(e.target.value)}
+              placeholder="e.g. adalovelace"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="github">GitHub Username (Optional)</Label>
+            <Input
+              id="github"
+              value={github}
+              onChange={(e) => setGithub(e.target.value)}
               placeholder="e.g. adalovelace"
             />
           </div>

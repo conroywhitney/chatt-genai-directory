@@ -1,14 +1,15 @@
 "use client"
 
-import { useState, useRef, useEffect } from "react"
+import { useState, useEffect } from "react"
 import { useLocalStorage } from "@/hooks/use-local-storage"
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"
-import { Twitter, Linkedin, User, Briefcase, BrainCircuit, MessageSquare } from "lucide-react"
+import { Twitter, Linkedin, User, Briefcase, BrainCircuit, Github } from "lucide-react"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { LoginView } from "@/components/login-view"
 import { ProfileView } from "@/components/profile-view"
 import { toast } from "@/components/ui/use-toast"
 import { Toaster } from "@/components/ui/toaster"
+import { DiscordIcon } from "@/components/icons/discord-icon"
 
 interface Member {
   id: string
@@ -18,6 +19,7 @@ interface Member {
   twitter?: string
   linkedin?: string
   discord?: string
+  github?: string
 }
 
 export default function MemberDirectoryPage() {
@@ -25,18 +27,26 @@ export default function MemberDirectoryPage() {
   const [currentUserId, setCurrentUserId] = useLocalStorage<string | null>("chattgenai-currentUser", null)
   const [newMemberId, setNewMemberId] = useState<string | null>(null)
 
+  // This state flag tracks if the initial "enter" animation has run for the member cards.
+  // We set it to true after the first batch of animations completes, preventing it from
+  // re-running on subsequent updates (e.g., profile edits).
+  const [initialAnimationComplete, setInitialAnimationComplete] = useState(false)
+
   const currentUser = members.find((m) => m.id === currentUserId)
 
-  const isInitialRender = useRef(true)
-
   useEffect(() => {
-    // After the first render, set this to false.
-    // A short delay ensures the effect runs after the initial render completes.
-    const timer = setTimeout(() => {
-      isInitialRender.current = false
-    }, 1)
-    return () => clearTimeout(timer)
-  }, [])
+    // This effect runs when the component mounts and members are loaded.
+    // It sets a timer to mark the initial animation as complete after all cards
+    // have had a chance to animate in.
+    if (members.length > 0 && !initialAnimationComplete) {
+      // Calculate delay to wait for all staggered animations to finish
+      const totalAnimationTime = members.length * 75 + 500 // 75ms per card + 500ms buffer
+      const timer = setTimeout(() => {
+        setInitialAnimationComplete(true)
+      }, totalAnimationTime)
+      return () => clearTimeout(timer)
+    }
+  }, [members, initialAnimationComplete])
 
   const handleLogin = () => {
     const newId = Date.now().toString()
@@ -104,8 +114,10 @@ export default function MemberDirectoryPage() {
                 {members.map((member, index) => {
                   let animationClass = ""
                   if (member.id === newMemberId) {
+                    // Specific animation for a brand new member
                     animationClass = "new-member-card"
-                  } else if (isInitialRender.current) {
+                  } else if (!initialAnimationComplete) {
+                    // Staggered animation for the initial page load
                     animationClass = "animate-card-enter"
                   }
 
@@ -114,6 +126,7 @@ export default function MemberDirectoryPage() {
                       <Card
                         className={`flex flex-col h-full transition-all duration-300 group-hover:scale-105 group-hover:shadow-lg dark:group-hover:shadow-black/25 ${animationClass}`}
                         style={{
+                          // Only apply stagger delay for the initial load animation
                           animationDelay: animationClass === "animate-card-enter" ? `${index * 75}ms` : undefined,
                           animationFillMode: animationClass ? "backwards" : undefined,
                         }}
@@ -122,6 +135,12 @@ export default function MemberDirectoryPage() {
                           <CardTitle className="text-xl">{member.name}</CardTitle>
                         </CardHeader>
                         <CardContent className="flex-grow space-y-3">
+                          {member.discord && (
+                            <div className="flex items-center text-sm text-gray-500 dark:text-gray-400">
+                              <DiscordIcon className="w-4 h-4 mr-2 flex-shrink-0" />
+                              <span className="truncate">{member.discord}</span>
+                            </div>
+                          )}
                           <div className="flex items-center text-sm text-gray-600 dark:text-gray-400">
                             <Briefcase className="w-4 h-4 mr-2 flex-shrink-0" />
                             <span>{member.role}</span>
@@ -133,15 +152,16 @@ export default function MemberDirectoryPage() {
                         </CardContent>
                         <CardFooter>
                           <div className="flex space-x-3">
-                            {member.discord && (
+                            {member.github && (
                               <a
-                                href="#"
-                                onClick={(e) => e.preventDefault()}
-                                title={`Discord: ${member.discord}`}
-                                className="text-gray-500 dark:text-gray-400 hover:text-indigo-500 dark:hover:text-indigo-400"
+                                href={`https://github.com/${member.github}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                title={`GitHub: ${member.github}`}
+                                className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
                               >
-                                <MessageSquare className="w-5 h-5" />
-                                <span className="sr-only">Discord</span>
+                                <Github className="w-5 h-5" />
+                                <span className="sr-only">GitHub</span>
                               </a>
                             )}
                             {member.twitter && (
