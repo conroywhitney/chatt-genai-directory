@@ -1,0 +1,121 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "🚀 Start Development Server",
+			"type": "shell",
+			"command": "yarn dev",
+			"group": "build",
+			"isBackground": true,
+			"problemMatcher": [],
+			"args": [],
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "new",
+				"showReuseMessage": true,
+				"clear": false
+			},
+			"runOptions": {
+				"runOn": "default"
+			}
+		},
+		{
+			"label": "📦 Install Dependencies",
+			"type": "shell",
+			"command": "yarn install",
+			"group": "build",
+			"isBackground": false,
+			"problemMatcher": [],
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "shared",
+				"showReuseMessage": false,
+				"clear": true
+			}
+		},
+		{
+			"label": "🔨 Build for Production",
+			"type": "shell",
+			"command": "yarn build",
+			"group": "build",
+			"isBackground": false,
+			"problemMatcher": [],
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "shared",
+				"showReuseMessage": false,
+				"clear": true
+			}
+		},
+		{
+			"label": "🧹 Run Linter",
+			"type": "shell",
+			"command": "yarn lint",
+			"group": "test",
+			"isBackground": false,
+			"problemMatcher": ["$eslint-stylish"],
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "shared",
+				"showReuseMessage": false,
+				"clear": true
+			}
+		},
+		{
+			"label": "🏃‍♂️ Quick Setup & Start",
+			"type": "shell",
+			"command": "./setup.sh && yarn dev",
+			"group": "build",
+			"isBackground": true,
+			"problemMatcher": [],
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "new",
+				"showReuseMessage": true,
+				"clear": false
+			}
+		},
+		{
+			"label": "🧪 Type Check",
+			"type": "shell",
+			"command": "yarn tsc --noEmit",
+			"group": "test",
+			"isBackground": false,
+			"problemMatcher": ["$tsc"],
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "shared",
+				"showReuseMessage": false,
+				"clear": true
+			}
+		},
+		{
+			"label": "🌐 Open in Browser",
+			"type": "shell",
+			"command": "echo 'Opening http://localhost:3000 in browser...' && sleep 2",
+			"group": "build",
+			"isBackground": false,
+			"problemMatcher": [],
+			"presentation": {
+				"echo": true,
+				"reveal": "silent",
+				"focus": false,
+				"panel": "shared",
+				"showReuseMessage": false,
+				"clear": false
+			}
+		}
+	]
+}
