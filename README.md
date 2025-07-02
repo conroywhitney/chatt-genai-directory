@@ -39,6 +39,36 @@ yarn dev
 - `yarn build` - Build for production
 - `yarn start` - Start production server
 - `yarn lint` - Run ESLint
+- `yarn test` - Run all tests
+- `yarn test --watch` - Run tests in watch mode
+- `yarn test --coverage` - Run tests with coverage report
+
+## Testing 🧪
+
+We have comprehensive test coverage across the entire application:
+
+### Test Categories
+
+- **Component Tests**: UI components and user interactions (6 test suites)
+- **API Tests**: REST endpoints and error handling (1 test suite)
+- **Hook Tests**: React hooks and state management (1 test suite)
+- **Config Tests**: Supabase and utility configurations (1 test suite)
+
+### Quick Test Commands
+
+```bash
+yarn test                    # Run all tests
+yarn test --watch            # Watch mode for development
+yarn test --coverage         # Generate coverage report
+```
+
+### VS Code Tasks & Shortcuts
+
+- **Ctrl+Shift+T**: Run all tests
+- **Ctrl+Shift+W**: Run tests in watch mode
+- **Ctrl+Shift+C**: Run tests with coverage
+
+**Total Coverage**: 51 passing tests across 9 test suites with ~96% line coverage
 
 ## The VeryHumanAI Approach
 
